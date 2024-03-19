@@ -13,16 +13,18 @@ footer {
 body {
     font-family: Arial, sans-serif;
     background-color: #f4f4f4;
+    /* Light gray */
     color: #333;
 }
 
 /* Header styles */
 header {
-    background-color: #6c1b19;
-    /* Maroon */
+    background: linear-gradient(to bottom, #6c1b19, #4a0d0b);
+    /* Maroon gradient */
     color: #fff;
     padding: 20px;
     text-align: center;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
 header h1 {
@@ -31,9 +33,10 @@ header h1 {
 
 /* Navigation styles */
 nav {
-    background-color: #990000;
-    /* Dark Maroon */
+    background: linear-gradient(to bottom, #990000, #660000);
+    /* Dark Maroon gradient */
     padding: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
 nav ul {
@@ -50,6 +53,7 @@ nav ul li a {
     text-decoration: none;
     color: #fff;
     font-weight: bold;
+    transition: color 0.3s ease;
 }
 
 nav ul li a:hover {
@@ -68,14 +72,15 @@ section {
     margin-bottom: 20px;
     padding: 20px;
     border-radius: 5px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
 /* Footer styles */
 footer {
-    background-color: #6c1b19;
-    /* Maroon */
+    background: linear-gradient(to bottom, #6c1b19, #4a0d0b);
+    /* Maroon gradient */
     color: #fff;
     padding: 10px;
     text-align: center;
+    box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
 }
