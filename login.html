@@ -12,8 +12,73 @@
 <body>
     <main>
         <section id="about">
-            <h2>Log In</h2>
-            <p>Click Here to Log In to Flannel</p>
+
+            <body>
+                <h1>Welcome to Flannel!</h1>
+                <h4>Facial detection technology for the ages...</h4>
+
+                <p>Emotion is an important part of the human experience. We're trying to integrate it with technology.
+                </p>
+
+
+                <div> </div>
+                <h6>Not a member? Love Flannel? Sign up for free.</h6>
+                <div> </div>
+                <!--<button class="button button2">Sign Up</button></br>-->
+
+                <div class="form-box">
+                    <!--<button class="button button1">Sign In</button></br>-->
+                    <h5 id="title">Sign In</h5>
+                    <form>
+                        <div class="input-group">
+                            <div class="input-field" id="nameField"></div>
+                            <input type="" text" placeholder="Student ID">
+
+                            <div class="input-field"></div>
+                            <input type="" password" placeholder="Password">
+                        </div>
+                        <p>Lost Password? <a href="#">Click Here</a></p>
+
+                        <div class="btn-field">
+                            <button type="button" id="signupBtn">Sign Up</button>
+                            <button type="button" id="signinBtn" class="disable">Sign In</button>
+
+                        </div>
+                    </form>
+                </div>
+
+                <ul>
+                    <li> </li>
+                    <li> </li>
+                </ul>
+
+                <img src="th.jpg" alt="Test">
+
+                <script>
+                    let signupBtn = document.getElementById("signupBtn");
+                    let signinBtn = document.getElementById("signinBtn");
+                    let nameField = document.getElementById("nameField");
+                    let title = document.getElementById("title");
+
+                    signinBtn.onclick = function () {
+                        nameField.style.maxHeight = "0";
+                        title.innerHTML = "Sign In";
+                        signupBtn.classList.add("disable");
+                        signinBtn.classList.remove("disable");
+                        var nameVar = document.getElementById("nameField")[0].value;
+                        document.write(nameVar);
+                    }
+
+                    signupBtn.onclick = function () {
+                        nameField.style.maxHeight = "60px";
+                        title.innerHTML = "Sign Up";
+                        signupBtn.classList.remove("disable");
+                        signinBtn.classList.add("disable");
+                    }
+
+                </script>
+            </body>
+
         </section>
     </main>
 </body>
