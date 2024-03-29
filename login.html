@@ -14,45 +14,39 @@
         <section id="about">
 
             <body>
-                <h1>Welcome to Flannel!</h1>
-                <h4>Facial detection technology for the ages...</h4>
-
-                <p>Emotion is an important part of the human experience. We're trying to integrate it with technology.
-                </p>
-
-
-                <div> </div>
-                <h6>Not a member? Love Flannel? Sign up for free.</h6>
-                <div> </div>
-                <!--<button class="button button2">Sign Up</button></br>-->
+                <header>Welcome to Flannel!</header>
+                <nav>
+                    <h3>Log in to your Flannel account!</h3>
+                    <h4>Not a member? Love flannels? And Flannel? <em>Create an account for free.</em></h4>
+                </nav>
 
                 <div class="form-box">
                     <!--<button class="button button1">Sign In</button></br>-->
-                    <h5 id="title">Sign In</h5>
-                    <form>
-                        <div class="input-group">
-                            <div class="input-field" id="nameField"></div>
-                            <input type="" text" placeholder="Student ID">
 
-                            <div class="input-field"></div>
-                            <input type="" password" placeholder="Password">
-                        </div>
+                    <form method="post" action="connect.php">
+                        Username : <input type="text" name="username"><br><br>
+                        Password : <input type="password" name="password"><br><br>
+                        <input type="submit" value="Sign In">
+                        <input type="submit" value="Sign Up">
+                    </form>
+
+                    <form>
                         <p>Lost Password? <a href="#">Click Here</a></p>
+                    </form>
+
+                    <!-- Testing
 
                         <div class="btn-field">
                             <button type="button" id="signupBtn">Sign Up</button>
                             <button type="button" id="signinBtn" class="disable">Sign In</button>
 
                         </div>
-                    </form>
                 </div>
 
                 <ul>
                     <li> </li>
                     <li> </li>
                 </ul>
-
-                <img src="th.jpg" alt="Test">
 
                 <script>
                     let signupBtn = document.getElementById("signupBtn");
@@ -77,6 +71,7 @@
                     }
 
                 </script>
+-->
             </body>
 
         </section>

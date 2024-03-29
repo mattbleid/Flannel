@@ -31,6 +31,28 @@ header h1 {
     font-size: 2em;
 }
 
+h2 {
+    font-size: 1em;
+    color: white;
+    padding: 10px;
+    text-align: center;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    background-color: rgb(114, 114, 114);
+}
+
+h3 {
+    color: #ffd700;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    /* Gold */
+}
+
+h4 {
+    color: gray;
+    text-align: center;
+    font-size: x-small;
+}
+
 /* Navigation styles */
 nav {
     background: linear-gradient(to bottom, #990000, #660000);
@@ -83,4 +105,12 @@ footer {
     padding: 10px;
     text-align: center;
     box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Form styles */
+form {
+    color: white;
+    padding: 10px;
+    text-align: center;
+    background: linear-gradient(to bottom, #4b4a4a, #1c1515);
 }
