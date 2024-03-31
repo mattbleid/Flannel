@@ -16,6 +16,8 @@ body {
     /* Adjust this path */
     background-repeat: repeat;
     color: #333;
+    animation: wave 10s infinite alternate;
+
 }
 
 /* Header styles */
