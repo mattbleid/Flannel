@@ -12,15 +12,15 @@ footer {
 
 body {
     font-family: Arial, sans-serif;
-    background-color: #f4f4f4;
-    /* Light gray */
+    background-image: url('path/to/your/flannel-pattern-image.jpg');
+    /* Adjust this path */
+    background-repeat: repeat;
     color: #333;
 }
 
 /* Header styles */
 header {
     background: linear-gradient(to bottom, #6c1b19, #4a0d0b);
-    /* Maroon gradient */
     color: #fff;
     padding: 20px;
     text-align: center;
@@ -44,7 +44,6 @@ h3 {
     color: #ffd700;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     text-align: center;
-    /* Gold */
 }
 
 h4 {
@@ -56,7 +55,6 @@ h4 {
 /* Navigation styles */
 nav {
     background: linear-gradient(to bottom, #990000, #660000);
-    /* Dark Maroon gradient */
     padding: 10px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
@@ -80,7 +78,6 @@ nav ul li a {
 
 nav ul li a:hover {
     color: #ffd700;
-    /* Gold */
 }
 
 /* Main content styles */
@@ -100,7 +97,6 @@ section {
 /* Footer styles */
 footer {
     background: linear-gradient(to bottom, #6c1b19, #4a0d0b);
-    /* Maroon gradient */
     color: #fff;
     padding: 10px;
     text-align: center;
