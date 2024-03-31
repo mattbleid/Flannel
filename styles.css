@@ -12,7 +12,7 @@ footer {
 
 body {
     font-family: Arial, sans-serif;
-    background-image: url('path/to/your/flannel-pattern-image.jpg');
+    background-image: url('flannel.jpg');
     /* Adjust this path */
     background-repeat: repeat;
     color: #333;
@@ -109,4 +109,80 @@ form {
     padding: 10px;
     text-align: center;
     background: linear-gradient(to bottom, #4b4a4a, #1c1515);
+}
+
+
+/* Media query for phone screens */
+@media screen and (max-width: 768px) {
+    header {
+        padding: 10px;
+    }
+
+    nav {
+        padding: 5px;
+    }
+
+    main {
+        padding: 10px;
+    }
+
+    section {
+        padding: 10px;
+    }
+
+    footer {
+        padding: 5px;
+    }
+
+    h2 {
+        font-size: 0.8em;
+    }
+
+    h3 {
+        font-size: 0.9em;
+    }
+
+    nav ul li {
+        margin-right: 10px;
+    }
+}
+
+/* Media query for tablet screens */
+@media screen and (min-width: 769px) and (max-width: 1024px) {
+    header {
+        padding: 15px;
+    }
+
+    nav {
+        padding: 10px;
+    }
+
+    main {
+        padding: 15px;
+    }
+
+    section {
+        padding: 15px;
+    }
+
+    footer {
+        padding: 10px;
+    }
+
+    h2 {
+        font-size: 1em;
+    }
+
+    h3 {
+        font-size: 1.1em;
+    }
+
+    nav ul li {
+        margin-right: 15px;
+    }
+}
+
+/* Media query for desktop screens */
+@media screen and (min-width: 1025px) {
+    /* No changes needed*/
 }
