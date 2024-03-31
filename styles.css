@@ -82,12 +82,18 @@ nav ul li a:hover {
     color: #ffd700;
 }
 
-/* Main content styles */
+.sticky {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
+}
+
 main {
     padding: 20px;
 }
 
-/* Section styles */
 section {
     background-color: #fff;
     margin-bottom: 20px;
@@ -96,7 +102,6 @@ section {
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
-/* Footer styles */
 footer {
     background: linear-gradient(to bottom, #6c1b19, #4a0d0b);
     color: #fff;
@@ -105,7 +110,6 @@ footer {
     box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
 }
 
-/* Form styles */
 form {
     color: white;
     padding: 10px;

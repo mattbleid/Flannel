@@ -17,4 +17,20 @@ document.addEventListener('DOMContentLoaded', function () {
             });
         });
     });
+    // Sticky Navigation Bar
+    const navBar = document.querySelector('nav');
+    const navBarOffsetTop = navBar.offsetTop;
+
+    function handleScroll() {
+        if (window.scrollY >= navBarOffsetTop) {
+            navBar.classList.add('sticky');
+        } else {
+            navBar.classList.remove('sticky');
+        }
+    }
+
+    window.addEventListener('scroll', handleScroll);
+
+    ScrollReveal().reveal('.section', { delay: 200, distance: '50px', easing: 'ease-in-out' });
+
 });
