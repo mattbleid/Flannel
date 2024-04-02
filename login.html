@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flannel User Log In</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <main>
+        <section id="about">
+
+            <body>
+                <header>Welcome to Flannel!</header>
+                <nav>
+                    <h3>Log in to your Flannel account!</h3>
+                    <h4>Not a member? Love flannels? And Flannel? <em>Create an account for free.</em></h4>
+                    <ul>
+                        <li><a href="home.html">Home</a></li>
+                        <li><a href="login.html">Log In</a></li>
+                        <li><a href="contact.html">Contact</a></li>
+                    </ul>
+                </nav>
+
+                <div class="form-box">
+
+                    <form method="post" action="connect.php">
+                        Username : <input type="text" name="username"><br><br>
+                        Password : <input type="password" name="password"><br><br>
+                        <input type="submit" value="Sign In">
+                        <input type="submit" value="Sign Up">
+                    </form>
+
+                    <form>
+                        <p>Lost Password? <a href="#">Click Here</a></p>
+                    </form>
+
+                    <!-- Testing
+
+                        <div class="btn-field">
+                            <button type="button" id="signupBtn">Sign Up</button>
+                            <button type="button" id="signinBtn" class="disable">Sign In</button>
+
+                        </div>
+                </div>
+
+                <ul>
+                    <li> </li>
+                    <li> </li>
+                </ul>
+
+                <script>
+                    let signupBtn = document.getElementById("signupBtn");
+                    let signinBtn = document.getElementById("signinBtn");
+                    let nameField = document.getElementById("nameField");
+                    let title = document.getElementById("title");
+
+                    signinBtn.onclick = function () {
+                        nameField.style.maxHeight = "0";
+                        title.innerHTML = "Sign In";
+                        signupBtn.classList.add("disable");
+                        signinBtn.classList.remove("disable");
+                        var nameVar = document.getElementById("nameField")[0].value;
+                        document.write(nameVar);
+                    }
+
+                    signupBtn.onclick = function () {
+                        nameField.style.maxHeight = "60px";
+                        title.innerHTML = "Sign Up";
+                        signupBtn.classList.remove("disable");
+                        signinBtn.classList.add("disable");
+                    }
+
+                </script>
+-->
+            </body>
+
+        </section>
+    </main>
+</body>
+
+</html>
