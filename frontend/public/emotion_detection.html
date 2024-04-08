@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Emotion Detection</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.5.0/socket.io.js"></script>
+  </head>
+  <body>
+    <video id="video" width="640" height="480" autoplay></video>
+    <div id="emotions"></div>
+
+    <script>
+      const socket = io();
+      const video = document.getElementById("video");
+      const emotionsDiv = document.getElementById("emotions");
+
+      navigator.mediaDevices.getUserMedia({ video: true }).then((stream) => {
+        video.srcObject = stream;
+      });
+
+      video.addEventListener("play", () => {
+        const canvas = document.createElement("canvas");
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+
+        setInterval(() => {
+          canvas
+            .getContext("2d")
+            .drawImage(video, 0, 0, canvas.width, canvas.height);
+          const frameData = canvas.toDataURL("image/jpeg");
+          socket.emit("frame", { frame: frameData });
+        }, 100);
+      });
+
+      socket.on("emotions", (data) => {
+        const { dominant_emotion, emotion_scores } = data;
+        emotionsDiv.innerHTML = `
+        <p>Dominant Emotion: ${dominant_emotion}</p>
+        <p>Emotion Scores: ${JSON.stringify(emotion_scores)}</p>
+      `;
+      });
+    </script>
+  </body>
+</html>
