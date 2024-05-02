@@ -50,6 +50,12 @@ function Camera() {
           console.log("Dominant Emotion:", data.dominant_emotion);
           // Log only specified emotions
           setEmotion(data.dominant_emotion);
+          if (data.dominant_emotion == "angry") {
+            window.alert("You appear to be angry, take a deep breath and relax your muscles!!")
+          }
+          if (data.dominat_emotion == "sad") {
+            window.alert("It seems you are sad. Lets turn that frown upside down!")
+          }
           const filteredEmotions = Object.keys(data.emotions)
             .filter((key) =>
               ["angry", "sad", "neutral", "happy", "surprise"].includes(key)
