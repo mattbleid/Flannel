@@ -41,14 +41,23 @@ const StyledLink = styled(Link)`
 
 const NavigationBar = () => {
   const [isSticky, setSticky] = useState(false);
+  const [isSmallScreen, setSmallScreen] = useState(false);
 
   const handleScroll = () => {
     setSticky(window.scrollY > 0);
   };
 
+  const handleResize = () => {
+    setSmallScreen(window.innerWidth <= 600);
+  };
+
   useEffect(() => {
     window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
+    window.addEventListener("resize", handleResize);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("resize", handleResize)
+    }
   }, []);
 
   return (
