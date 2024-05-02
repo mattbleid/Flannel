@@ -3,6 +3,8 @@ import React, { useRef, useEffect, useState } from "react";
 function Camera() {
   const videoRef = useRef(null);
   const [error, setError] = useState("");
+  const [emotion, setEmotion] = useState("");
+  const [imageSrc, setImageSrc] = useState("");
 
   useEffect(() => {
     navigator.mediaDevices
@@ -32,6 +34,9 @@ function Camera() {
     canvas.height = video.videoHeight;
     const context = canvas.getContext("2d");
     context.drawImage(video, 0, 0, canvas.width, canvas.height);
+    const imageUrl = canvas.toDataURL();
+    setImageSrc(imageUrl);
+
     canvas.toBlob(async (blob) => {
       const formData = new FormData();
       formData.append("image", blob);
@@ -44,6 +49,7 @@ function Camera() {
         if (data.dominant_emotion) {
           console.log("Dominant Emotion:", data.dominant_emotion);
           // Log only specified emotions
+          setEmotion(data.dominant_emotion);
           const filteredEmotions = Object.keys(data.emotions)
             .filter((key) =>
               ["angry", "sad", "neutral", "happy", "surprise"].includes(key)
@@ -56,7 +62,7 @@ function Camera() {
         }
       } catch (error) {
         console.error("", error);
-        setError("");
+        setError("Failed to analyze emotion.");
       }
     });
   };
@@ -79,6 +85,8 @@ function Camera() {
         height="480"
       ></video>
       {error && <div>Error: {error}</div>}
+      {emotion && <div>Emotion: {emotion}</div>}
+      {imageSrc && <img src={imageSrc} alt="Captured" />} {/* Display captured image */}
     </div>
   );
 }
