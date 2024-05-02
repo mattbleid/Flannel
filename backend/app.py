@@ -37,12 +37,17 @@ class User(db.Model):
         return check_password_hash(self.password_hash, password)
 
 class Emotion(db.Model):
+    __tablename__="emotion_data"
     id = db.Column(db.Integer, primary_key=True)
+    image_url = db.Column(db.String)
+    emotion = db.Column(db.String)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     emotion_type = db.Column(db.String(50), nullable=False)
     value = db.Column(db.Float, nullable=False)
     timestamp = db.Column(db.DateTime, default=datetime.utcnow)
 
+    def __repr__(self):
+        return f"<EmotionData(emotion='{self.emotion}', image_url ='{self.image_url}')>"
 # Logging configuration
 logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
 

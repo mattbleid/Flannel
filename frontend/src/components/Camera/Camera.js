@@ -50,6 +50,21 @@ function Camera() {
           console.log("Dominant Emotion:", data.dominant_emotion);
           // Log only specified emotions
           setEmotion(data.dominant_emotion);
+
+          //send data to backend
+          const postData = {
+            emotion: data.dominant_emotion,
+            image_url: imageURL
+          }
+
+          fetch("http://localhost:5001/save_emotion", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(postData),
+          });
+          //backend sent
           if (data.dominant_emotion == "angry") {
             window.alert("You appear to be angry, take a deep breath and relax your muscles!!")
           }
