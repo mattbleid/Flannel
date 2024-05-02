@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 
 function Home() {
   const [isSticky, setIsSticky] = useState(false);
+  const [isSmallScreen, setSmallScreen] = useState(false);
 
   const handleScroll = () => {
     // Set the navbar sticky based on scroll position
@@ -10,11 +11,16 @@ function Home() {
     setIsSticky(sticky);
   };
 
+  const handleResize = () => {
+    setSmallScreen(window.innerWidth <= 600);
+  }
   useEffect(() => {
     window.addEventListener("scroll", handleScroll);
-
+    window.addEventListener("resize", handleResize)
+    handleResize();
     return () => {
       window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("resize", handleResize);
     };
   }, []);
 
