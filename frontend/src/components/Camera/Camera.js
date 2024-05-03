@@ -34,7 +34,7 @@ function Camera() {
     canvas.height = video.videoHeight;
     const context = canvas.getContext("2d");
     context.drawImage(video, 0, 0, canvas.width, canvas.height);
-    const imageUrl = canvas.toDataURL();
+    //const imageUrl = canvas.toDataURL();
     setImageSrc(imageUrl);
 
     canvas.toBlob(async (blob) => {
@@ -54,7 +54,7 @@ function Camera() {
           //send data to backend
           const postData = {
             emotion: data.dominant_emotion,
-            image_url: imageURL
+            //image_url: imageURL
           }
 
           fetch("http://localhost:5001/save_emotion", {
@@ -107,7 +107,6 @@ function Camera() {
       ></video>
       {error && <div>Error: {error}</div>}
       {emotion && <div>Emotion: {emotion}</div>}
-      {imageSrc && <img src={imageSrc} alt="Captured" />} {/* Display captured image */}
     </div>
   );
 }
