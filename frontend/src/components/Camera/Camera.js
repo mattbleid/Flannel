@@ -1,25 +1,35 @@
+
 import React, { useRef, useEffect, useState } from "react";
+import "./Camera.css"; // Import CSS file for styling
 
 function Camera() {
   const videoRef = useRef(null);
   const [error, setError] = useState("");
-  //const [emotion, setEmotion] = useState("");
-  //const [imageSrc, setImageSrc] = useState("");
+  const [dominantEmotion, setDominantEmotion] = useState("");
 
   useEffect(() => {
-    navigator.mediaDevices
-      .getUserMedia({ video: true })
-      .then((stream) => {
+    const initializeCamera = async () => {
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ video: true });
         if (videoRef.current) {
           videoRef.current.srcObject = stream;
         }
-      })
-      .catch((err) => {
+      } catch (err) {
         console.error("Error accessing the camera:", err);
-        setError(
-          "Failed to access the camera. Please ensure the camera is working and the site has permission to access it."
-        );
-      });
+        setError("Failed to access the camera. Please ensure the camera is working and the site has permission to access it.");
+      }
+    };
+
+    initializeCamera();
+
+    return () => {
+      // Clean up the video stream when the component unmounts
+      if (videoRef.current && videoRef.current.srcObject) {
+        const stream = videoRef.current.srcObject;
+        const tracks = stream.getTracks();
+        tracks.forEach(track => track.stop());
+      }
+    };
   }, []);
 
   const captureImage = async () => {
@@ -34,79 +44,76 @@ function Camera() {
     canvas.height = video.videoHeight;
     const context = canvas.getContext("2d");
     context.drawImage(video, 0, 0, canvas.width, canvas.height);
-    //const imageUrl = canvas.toDataURL();
-    //setImageSrc(imageUrl);
 
     canvas.toBlob(async (blob) => {
       const formData = new FormData();
       formData.append("image", blob);
+
       try {
         const response = await fetch("http://localhost:5001/analyze", {
           method: "POST",
           body: formData,
         });
         const data = await response.json();
-        if (data.dominant_emotion) {
-          console.log("Dominant Emotion:", data.dominant_emotion);
-          // Log only specified emotions
-          //setEmotion(data.dominant_emotion);
-          //send data to backend
-          const postData = {
-            emotion: data.dominant_emotion,
-            //image_url: imageURL
-          }
 
-          fetch("http://localhost:5001/save_emotion", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(postData),
-          });
-          //backend sent
-          if (data.dominant_emotion == "angry") {
-            window.alert("You appear to be angry, take a deep breath and relax your muscles!!")
-          }
-          if (data.dominat_emotion == "sad") {
-            window.alert("It seems you are sad. Lets turn that frown upside down!")
-          }
-          const filteredEmotions = Object.keys(data.emotions)
-            .filter((key) =>
-              ["angry", "sad", "neutral", "happy", "surprise"].includes(key)
-            )
-            .reduce((obj, key) => {
-              obj[key] = data.emotions[key];
-              return obj;
-            }, {});
-          console.log("Filtered Emotions:", filteredEmotions);
+        // Set the dominant emotion
+        if (data.dominant_emotion) {
+          setDominantEmotion(data.dominant_emotion);
+        } else {
+          setDominantEmotion("");
         }
+        handleEmotionAnalysis(data);
       } catch (error) {
-        console.error("", error);
+        console.error("Failed to analyze emotion:", error);
         setError("Failed to analyze emotion.");
       }
     });
   };
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      captureImage();
-    }, 5000); // capture image. 1 is 1 milliseconds. 1000 is 1 second.
+  const handleEmotionAnalysis = (data) => {
+    if (data.dominant_emotion) {
+      console.log("Dominant Emotion:", data.dominant_emotion);
 
-    return () => clearInterval(interval);
+      // Additional logic based on dominant emotion
+      switch (data.dominant_emotion) {
+        case "angry":
+          showAlert("You appear to be angry. Take a deep breath and relax your muscles!");
+          break;
+        case "sad":
+          showAlert("It seems you are sad. Let's turn that frown upside down!");
+          break;
+        case "happy":
+          // Handle happy emotion
+          break;
+        case "neutral":
+          // Handle neutral emotion
+          break;
+        case "surprised":
+          // Handle surprised emotion
+          break;
+        default:
+          break;
+      }
+    }
+  };
+
+  const showAlert = (message) => {
+    const title = "Flannel";
+    window.alert(title + ": " + message)
+  }
+
+  useEffect(() => {
+    const intervalId = setInterval(captureImage, 5000);
+
+    return () => clearInterval(intervalId);
   }, []);
 
-  return (
-    <div>
-      <video
-        ref={videoRef}
-        autoPlay
-        playsInline
-        width="640"
-        height="480"
-      ></video>
-      {error && <div>Error: {error}</div>}
-
-    </div>
+  return React.createElement(
+    "div",
+    { className: "camera-container" },
+    React.createElement("video", { ref: videoRef, autoPlay: true, playsInline: true, className: "video" }),
+    dominantEmotion && React.createElement("div", { className: "emotion-display" }, "Dominant Emotion: ", dominantEmotion),
+    error && React.createElement("div", null, "Error: ", error)
   );
 }
 

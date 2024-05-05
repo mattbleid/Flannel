@@ -1,0 +1,23 @@
+.camera-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    /* Make the container fill the viewport height */
+}
+
+.video {
+    width: 80%;
+    /* Adjust the width of the video element */
+    max-width: 800px;
+    /* Set a maximum width for larger screens */
+    height: auto;
+    /* Maintain aspect ratio */
+}
+
+.emotion-display {
+    margin-top: 10px;
+    font-size: 18px;
+    font-weight: bold;
+}
