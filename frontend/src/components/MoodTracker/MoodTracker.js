@@ -26,6 +26,7 @@ function MoodTracker() {
 
   const handleEmotionClick = () => {
     navigate("/home");
+
   };
 
   return (

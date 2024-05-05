@@ -4,6 +4,8 @@
     align-items: center;
     justify-content: center;
     height: 100vh;
+    border: 20px solid red;
+    padding: 10px;
     /* Make the container fill the viewport height */
 }
 

@@ -1,8 +1,98 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 
 function Resources() {
+  const [isSticky, setIsSticky] = useState(false);
+  const [isSmallScreen, setSmallScreen] = useState(false);
+
+  const handleScroll = () => {
+    // Set the navbar sticky based on scroll position
+    const sticky = window.scrollY > 50;
+    setIsSticky(sticky);
+  };
+
+  const handleResize = () => {
+    setSmallScreen(window.innerWidth <= 600);
+  }
+  useEffect(() => {
+    window.addEventListener("scroll", handleScroll);
+    window.addEventListener("resize", handleResize)
+    handleResize();
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
   return (
     <>
+      <header className={`${isSticky ? "sticky" : ""}`}>
+        <nav
+          className="navbar navbar-expand-md bg-body py-3"
+          style={
+            isSticky
+              ? { position: "fixed", top: 0, width: "100%", zIndex: 1000 }
+              : null
+          }
+        >
+          <div className="container">
+            <Link className="navbar-brand d-flex align-items-center" to="/">
+              <strong>
+                <span style={{ color: "rgb(207, 6, 6)" }}>Flannel</span>
+              </strong>
+            </Link>
+            <button
+              className="navbar-toggler"
+              type="button"
+              data-bs-toggle="collapse"
+              data-bs-target="#navcol-2"
+            >
+              <span className="navbar-toggler-icon"></span>
+            </button>
+            <div className="collapse navbar-collapse" id="navcol-2">
+              <ul className="navbar-nav ms-auto">
+                <li className="nav-item">
+                  <Link className="nav-link active" to="/">
+                    Home
+                  </Link>
+                </li>
+                <li className="nav-item">
+                  <Link className="nav-link" to="/moodtracker">
+                    Mood Tracker
+                  </Link>
+                </li>
+                <li className="nav-item">
+                  <Link className="nav-link" to="/camera">
+                    Camera
+                  </Link>
+                </li>
+                <li className="nav-item">
+                  <Link className="nav-link" to="/resources">
+                    Resources
+                  </Link>
+                </li>
+
+                <li className="nav-item">
+                  <Link className="nav-link" to="/profile">
+                    Profile
+                  </Link>
+                </li>
+                <li className="nav-item">
+                  <Link className="nav-link" to="/login">
+                    Sign In
+                  </Link>
+                </li>
+              </ul>
+              <Link
+                className="btn btn-primary ms-md-2"
+                to="/signup"
+                style={{ background: "rgb(207,6,6)" }}
+              >
+                Create Account
+              </Link>
+            </div>
+          </div>
+        </nav>
+      </header>
       <style>
         {`
           .container {
