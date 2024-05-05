@@ -4,7 +4,7 @@ function Camera() {
   const videoRef = useRef(null);
   const [error, setError] = useState("");
   const [emotion, setEmotion] = useState("");
-  const [imageSrc, setImageSrc] = useState("");
+  //const [imageSrc, setImageSrc] = useState("");
 
   useEffect(() => {
     navigator.mediaDevices
@@ -35,7 +35,7 @@ function Camera() {
     const context = canvas.getContext("2d");
     context.drawImage(video, 0, 0, canvas.width, canvas.height);
     //const imageUrl = canvas.toDataURL();
-    setImageSrc(imageUrl);
+    //setImageSrc(imageUrl);
 
     canvas.toBlob(async (blob) => {
       const formData = new FormData();

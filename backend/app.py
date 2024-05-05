@@ -29,7 +29,8 @@ class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(120), unique=True, nullable=False)
     password_hash = db.Column(db.String(256))
-
+    name = db.Column(db.String(120), nullable=False)
+    
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
 
@@ -55,11 +56,12 @@ logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %
 @app.route('/register', methods=['POST'])
 def register():
     data = request.get_json()
+    name = data.get('name')
     user = User.query.filter_by(email=data['email']).first()
     if user:
         return jsonify({"error": "User already exists"}), 409
     
-    new_user = User(email=data['email'])
+    new_user = User(email=data['email'], name = name)
     new_user.set_password(data['password'])
     db.session.add(new_user)
     db.session.commit()
