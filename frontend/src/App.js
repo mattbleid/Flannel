@@ -12,6 +12,7 @@ import SignInSide from "./components/SignInSide/SignInSide";
 import SignUp from "./components/SignUp/SignUp";
 import Camera from "./components/Camera/Camera";
 import Resources from "./components/MentalHealthResources/Resources";
+import Profile from "./components/ProfilePage/ProfilePage";
 
 function App() {
   return (
@@ -24,6 +25,7 @@ function App() {
         <Route path="/resources" element={<Resources />} />
         <Route path="/camera" element={<Camera />} />
         <Route path="/moodtracker" element={<MoodTracker />} />
+        <Route path="/profile" element={<Profile />} />
       </Routes>
     </Router>
   );
