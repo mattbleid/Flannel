@@ -5,15 +5,38 @@ const ProfilePage = () => {
 
     const navigate = useNavigate;
     const [user, setUser] = useState({
-        name: "John Doe",
-        email: "john@example.com",
-        bio: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+        name: "",
+        email: "",
+        bio: "",
 
     });
 
 
     useEffect(() => {
         // Fetch user data from an API or perform any other side effect
+        const fetchUserData = async () => {
+            try {
+                const response = await fetch("http://localhost:5001/user/profile", {
+                    method: "GET",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    // You may need to send some authentication token or session information here
+                });
+                const userData = await response.json();
+                if (response.ok) {
+                    setUser(userData);
+                } else {
+                    // Handle error
+                    console.error("Failed to fetch user data");
+                }
+            } catch (err) {
+                // Handle error
+                console.error("Failed to connect to the server.", err);
+            }
+        };
+
+        fetchUserData();
 
     }, []);
 
@@ -43,9 +66,9 @@ const ProfilePage = () => {
                     </div>
                 </div>
             </nav>
-            <h1>Profile Page</h1>
+            <h1>Welcome to Your Flannel Profile!</h1>
             <div>
-                <h2>User Information</h2>
+                <h2>Personal Information</h2>
                 <p><strong>Name:</strong> {user.name}</p>
                 <p><strong>Email:</strong> {user.email}</p>
                 <p><strong>Bio:</strong> {user.bio}</p>
