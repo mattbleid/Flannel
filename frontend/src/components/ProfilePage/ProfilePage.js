@@ -7,10 +7,8 @@ const ProfilePage = () => {
     const [user, setUser] = useState({
         name: "",
         email: "",
-        bio: "",
-
     });
-
+    const [emotion, setEmotion] = useState("");
 
     useEffect(() => {
         // Fetch user data from an API or perform any other side effect
@@ -30,6 +28,20 @@ const ProfilePage = () => {
                     // Handle error
                     console.error("Failed to fetch user data");
                 }
+
+                const emotionResponse = await fetch('http://localhost:5001/emotion?user_id=${userData.id}', {
+                    method: "GET",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                });
+                const emotionData = await emotionResponse.json();
+                if (emotionResponse.ok) {
+                    setEmotion(emotionData.dominant_emotion);
+                } else {
+                    console.error("Failed to fetch emotion data");
+                }
+
             } catch (err) {
                 // Handle error
                 console.error("Failed to connect to the server.", err);
@@ -71,8 +83,8 @@ const ProfilePage = () => {
                 <h2>Personal Information</h2>
                 <p><strong>Name:</strong> {user.name}</p>
                 <p><strong>Email:</strong> {user.email}</p>
-                <p><strong>Bio:</strong> {user.bio}</p>
-                {/* Add more user information fields here */}
+                <h2>Emotion</h2>
+                <p><strong>Dominant Emotion:</strong>{emotion}</p>
             </div>
         </div>
     );
