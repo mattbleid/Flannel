@@ -31,23 +31,26 @@ function SignUp() {
 
   return (
     <div>
-      <nav className="navbar navbar-expand-md navbar-light fixed-top">
+      <nav className="navbar navbar-expand-md navbar-light fixed-top bg-danger">
         <div className="container">
           <Link className="navbar-brand" to="/">
-            <span style={{ color: "rgb(207, 6, 6)" }}>Flannel</span>
+            <span style={{ color: "#fff" }}>Flannel</span>
           </Link>
           <button
             className="navbar-toggler"
             type="button"
             data-bs-toggle="collapse"
             data-bs-target="#navbarNavAltMarkup"
+            aria-controls="navbarNavAltMarkup"
+            aria-expanded="false"
+            aria-label="Toggle navigation"
           >
             <span className="navbar-toggler-icon"></span>
           </button>
           <div className="collapse navbar-collapse" id="navbarNavAltMarkup">
             <ul className="navbar-nav ms-auto">
               <li className="nav-item">
-                <Link className="nav-link" to="/home">
+                <Link className="nav-link" to="/home" style={{ color: "#fff" }}>
                   Home
                 </Link>
               </li>
@@ -55,7 +58,7 @@ function SignUp() {
             <Link
               className="btn btn-primary"
               to="/login"
-              style={{ backgroundColor: "rgb(207,6,6)" }}
+              style={{ backgroundColor: "rgb(207, 6, 6)" }}
             >
               Sign In
             </Link>

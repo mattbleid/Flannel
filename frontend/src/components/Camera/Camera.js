@@ -1,40 +1,46 @@
+import React, { useRef, useEffect, useState, useCallback } from "react";
+import "./Camera.css";
 
-import React, { useRef, useEffect, useState } from "react";
-import "./Camera.css"; // Import CSS file for styling
-
-function Camera() {
+function Camera({ userEmail, authToken }) {
   const videoRef = useRef(null);
   const [error, setError] = useState("");
   const [dominantEmotion, setDominantEmotion] = useState("");
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
 
+  // Initialize the camera feed
   useEffect(() => {
     const initializeCamera = async () => {
       try {
-        const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+        const stream = await navigator.mediaDevices.getUserMedia({
+          video: true,
+        });
         if (videoRef.current) {
           videoRef.current.srcObject = stream;
+          videoRef.current.addEventListener("loadedmetadata", () => {
+            videoRef.current.play();
+          });
         }
       } catch (err) {
-        console.error("Error accessing the camera:", err);
-        setError("Failed to access the camera. Please ensure the camera is working and the site has permission to access it.");
+        setError("Failed to access the camera.");
       }
     };
 
     initializeCamera();
 
+    // Cleanup the camera stream
     return () => {
-      // Clean up the video stream when the component unmounts
-      if (videoRef.current && videoRef.current.srcObject) {
-        const stream = videoRef.current.srcObject;
-        const tracks = stream.getTracks();
-        tracks.forEach(track => track.stop());
+      const videoElement = videoRef.current; // Capture the ref value into a local variable
+      if (videoElement && videoElement.srcObject) {
+        const tracks = videoElement.srcObject.getTracks();
+        tracks.forEach((track) => track.stop());
       }
     };
   }, []);
 
-  const captureImage = async () => {
-    if (!videoRef.current) {
-      setError("No video stream available.");
+  // Capture an image and send it for analysis
+  const captureImage = useCallback(async () => {
+    if (!videoRef.current || videoRef.current.readyState !== 4) {
+      setError("No video stream available or video is not ready.");
       return;
     }
 
@@ -48,72 +54,59 @@ function Camera() {
     canvas.toBlob(async (blob) => {
       const formData = new FormData();
       formData.append("image", blob);
+      formData.append("email", userEmail);
+
+      if (!authToken) {
+        setError("User is not logged in or no token is found.");
+        return;
+      }
 
       try {
+        setIsAnalyzing(true);
         const response = await fetch("http://localhost:5001/analyze", {
           method: "POST",
+          headers: {
+            Authorization: `Bearer ${authToken}`,
+          },
           body: formData,
         });
-        const data = await response.json();
 
-        // Set the dominant emotion
-        if (data.dominant_emotion) {
-          setDominantEmotion(data.dominant_emotion);
-        } else {
-          setDominantEmotion("");
+        if (!response.ok) {
+          throw new Error(
+            `Emotion analysis failed with status: ${response.status}`
+          );
         }
-        handleEmotionAnalysis(data);
-      } catch (error) {
-        console.error("Failed to analyze emotion:", error);
-        setError("Failed to analyze emotion.");
+
+        const data = await response.json();
+        setDominantEmotion(data.dominant_emotion || "");
+      } catch (err) {
+        console.error("Analysis Error:", err);
+        setError(`Failed to analyze emotion: ${err.message}`);
+      } finally {
+        setIsAnalyzing(false);
       }
     });
-  };
+  }, [authToken, userEmail]);
 
-  const handleEmotionAnalysis = (data) => {
-    if (data.dominant_emotion) {
-      console.log("Dominant Emotion:", data.dominant_emotion);
-
-      // Additional logic based on dominant emotion
-      switch (data.dominant_emotion) {
-        case "angry":
-          showAlert("You appear to be angry. Take a deep breath and relax your muscles!");
-          break;
-        case "sad":
-          showAlert("It seems you are sad. Let's turn that frown upside down!");
-          break;
-        case "happy":
-          // Handle happy emotion
-          break;
-        case "neutral":
-          // Handle neutral emotion
-          break;
-        case "surprised":
-          // Handle surprised emotion
-          break;
-        default:
-          break;
-      }
-    }
-  };
-
-  const showAlert = (message) => {
-    const title = "Flannel";
-    window.alert(title + ": " + message)
-  }
-
+  // Periodically capture and analyze images
   useEffect(() => {
-    const intervalId = setInterval(captureImage, 5000);
-
+    const intervalId = setInterval(captureImage, 10000); // Every 10 seconds
     return () => clearInterval(intervalId);
-  }, []);
+  }, [captureImage]);
 
-  return React.createElement(
-    "div",
-    { className: "camera-container" },
-    React.createElement("video", { ref: videoRef, autoPlay: true, playsInline: true, className: "video" }),
-    dominantEmotion && React.createElement("div", { className: "emotion-display" }, "Dominant Emotion: ", dominantEmotion),
-    error && React.createElement("div", null, "Error: ", error)
+  return (
+    <div className="camera-container">
+      <video ref={videoRef} autoPlay playsInline className="video" />
+      {dominantEmotion && (
+        <div className="emotion-display">
+          Dominant Emotion: {dominantEmotion}
+        </div>
+      )}
+      {isAnalyzing && (
+        <div className="analyzing-message">Analyzing emotion...</div>
+      )}
+      {error && <div className="error-message">Error: {error}</div>}
+    </div>
   );
 }
 

@@ -19,6 +19,8 @@ function SignInSide() {
       });
       const data = await response.json();
       if (response.ok) {
+        // Store the JWT token in local storage
+        localStorage.setItem("token", data.token);
         navigate("/home");
       } else {
         setError(data.error);
@@ -30,23 +32,26 @@ function SignInSide() {
 
   return (
     <div>
-      <nav className="navbar navbar-expand-md navbar-light fixed-top">
+      <nav className="navbar navbar-expand-md navbar-light fixed-top bg-danger">
         <div className="container">
           <Link className="navbar-brand" to="/">
-            <span style={{ color: "rgb(207, 6, 6)" }}>Flannel</span>
+            <span style={{ color: "#fff" }}>Flannel</span>
           </Link>
           <button
             className="navbar-toggler"
             type="button"
             data-bs-toggle="collapse"
             data-bs-target="#navbarNav"
+            aria-controls="navbarNav"
+            aria-expanded="false"
+            aria-label="Toggle navigation"
           >
             <span className="navbar-toggler-icon"></span>
           </button>
           <div className="collapse navbar-collapse" id="navbarNav">
             <ul className="navbar-nav ms-auto">
               <li className="nav-item">
-                <Link className="nav-link" to="/home">
+                <Link className="nav-link" to="/home" style={{ color: "#fff" }}>
                   Home
                 </Link>
               </li>

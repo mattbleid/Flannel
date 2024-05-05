@@ -1,115 +1,167 @@
 from flask import Flask, request, jsonify
-from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
-import numpy as np
-import cv2
-from deepface import DeepFace
-import logging
+from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
-from datetime import datetime
-from werkzeug.security import generate_password_hash, check_password_hash
+from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt_identity
+from datetime import datetime, timedelta
+import os
+from deepface import DeepFace
 
+# Flask setup
 app = Flask(__name__)
-cors_options = {
-    "origins": ["http://localhost:3000"],
-    "methods": ["GET", "POST", "PUT", "DELETE"],
-    "allow_headers": ["Content-Type", "Authorization", "X-Requested-With"]
-}
-CORS(app, resources={r"/*": cors_options})
-
-# Database configuration
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:Flannel2024@localhost/flannel'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+# Simple secret key for demonstration purposes
+app.config['JWT_SECRET_KEY'] = 'simple-demo-key'
+# Extended token expiration for convenience
+app.config['JWT_ACCESS_TOKEN_EXPIRES'] = timedelta(days=1)
+
+# Database and JWT setup
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
+jwt = JWTManager(app)
 
-# Models
+# CORS configuration
+CORS(app, resources={r"/*": {"origins": "http://localhost:3000"}}, methods=["GET", "POST"], allow_headers=["Content-Type", "Authorization"])
+
+# Define User model
 class User(db.Model):
     __tablename__ = 'user'
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(120), unique=True, nullable=False)
-    password_hash = db.Column(db.String(256))
     name = db.Column(db.String(120), nullable=False)
-    
-    def set_password(self, password):
-        self.password_hash = generate_password_hash(password)
+    password = db.Column(db.String(120), nullable=False)
 
     def check_password(self, password):
-        return check_password_hash(self.password_hash, password)
+        return password == self.password
 
+# Define Emotion model
 class Emotion(db.Model):
-    __tablename__="emotion_data"
+    __tablename__ = "emotion_data"
     id = db.Column(db.Integer, primary_key=True)
-    image_url = db.Column(db.String)
-    emotion = db.Column(db.String)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     emotion_type = db.Column(db.String(50), nullable=False)
     value = db.Column(db.Float, nullable=False)
     timestamp = db.Column(db.DateTime, default=datetime.utcnow)
 
-    def __repr__(self):
-        return f"<EmotionData(emotion='{self.emotion}', image_url ='{self.image_url}')>"
-# Logging configuration
-logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
-
-# User registration endpoint
-@app.route('/register', methods=['POST'])
+# Register a new user
+@app.route('/register', methods=['POST', 'OPTIONS'])
 def register():
+    if request.method == 'OPTIONS':
+        response = jsonify({'message': 'Preflight request successful'})
+        response.headers.add('Access-Control-Allow-Origin', 'http://localhost:3000')
+        response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization')
+        response.headers.add('Access-Control-Allow-Methods', 'GET,POST')
+        return response
+
     data = request.get_json()
     name = data.get('name')
-    user = User.query.filter_by(email=data['email']).first()
+    email = data.get('email')
+    password = data.get('password')
+    if not name or not email or not password:
+        return jsonify({"error": "Missing required fields"}), 400
+    user = User.query.filter_by(email=email).first()
     if user:
         return jsonify({"error": "User already exists"}), 409
-    
-    new_user = User(email=data['email'], name = name)
-    new_user.set_password(data['password'])
+    new_user = User(email=email, name=name, password=password)
     db.session.add(new_user)
     db.session.commit()
-    
-    return jsonify({"message": "User successfully registered"}), 201
+    response = jsonify({"message": "User successfully registered"})
+    response.headers.add('Access-Control-Allow-Origin', 'http://localhost:3000')
+    response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization')
+    response.headers.add('Access-Control-Allow-Methods', 'GET,POST')
+    return response, 201
 
-# User login endpoint
-@app.route('/login', methods=['POST'])
+@app.route('/login', methods=['POST', 'OPTIONS'])
 def login():
+    if request.method == 'OPTIONS':
+        response = jsonify({'message': 'Preflight request successful'})
+        response.headers.add('Access-Control-Allow-Origin', 'http://localhost:3000')
+        response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization')
+        response.headers.add('Access-Control-Allow-Methods', 'GET,POST')
+        return response
+
     data = request.get_json()
-    user = User.query.filter_by(email=data['email']).first()
-    
-    if user and user.check_password(data['password']):
-        return jsonify({"message": "Login successful", "user_id": user.id}), 200
+    email = data.get('email')
+    password = data.get('password')
+
+    user = User.query.filter_by(email=email).first()
+    if user and user.check_password(password):
+        token = create_access_token(identity=user.id)
+        response = jsonify({'token': token})
+        response.headers.add('Access-Control-Allow-Origin', 'http://localhost:3000')
+        response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization')
+        response.headers.add('Access-Control-Allow-Methods', 'GET,POST')
+        return response
     else:
-        return jsonify({"error": "Invalid email or password"}), 401
+        return jsonify({'error': 'Invalid email or password'}), 401
 
-# Emotion analysis endpoint
-@app.route('/analyze', methods=['POST'])
-def analyze():
-    if 'image' not in request.files:
-        app.logger.info('No image file found in the request')
-        return jsonify({"error": "No image file found"}), 400
+@app.route('/analyze', methods=['POST', 'OPTIONS'])
+@jwt_required()
+def analyze_emotion():
+    if request.method == 'OPTIONS':
+        response = jsonify({'message': 'Preflight request successful'})
+        response.headers.add('Access-Control-Allow-Origin', 'http://localhost:3000')
+        response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization')
+        response.headers.add('Access-Control-Allow-Methods', 'POST')
+        return response
 
-    file = request.files['image']
-    npimg = np.frombuffer(file.read(), np.uint8)
-    img = cv2.imdecode(npimg, cv2.IMREAD_COLOR)
+    user_email = request.form.get('email')
+    image_file = request.files.get('image')
+    if not user_email or not image_file:
+        return jsonify({"error": "Missing required fields"}), 400
 
-    if img is None:
-        app.logger.info('Could not decode image.')
-        return jsonify({"error": "Could not decode image"}), 400
+    user = User.query.filter_by(email=user_email).first()
+    if not user:
+        return jsonify({"error": "User not found"}), 404
 
-    results = DeepFace.analyze(img, actions=['emotion'], enforce_detection=False)
+    image_path = 'temp_image.jpg'
+    image_file.save(image_path)
 
-    if not results:
-        app.logger.info('No results from DeepFace.')
-        return jsonify({"error": "No results returned"}), 500
+    try:
+        result = DeepFace.analyze(image_path, actions=['emotion'])
+        if isinstance(result, dict):
+            dominant_emotion = result['dominant_emotion']
+            emotion_value = result['emotion'][dominant_emotion]
+        else:
+            return jsonify({"error": "Invalid analysis result"}), 500
 
-    emotions = results[0]['emotion']  # Access the first element of the results list
-    dominant_emotion = max(emotions, key=emotions.get)
-
-    user_id = request.args.get('user_id')
-    if user_id:
-        new_emotion = Emotion(user_id=int(user_id), emotion_type=dominant_emotion, value=emotions[dominant_emotion])
-        db.session.add(new_emotion)
+        emotion_data = Emotion(
+            user_id=user.id,
+            emotion_type=dominant_emotion,
+            value=emotion_value
+        )
+        db.session.add(emotion_data)
         db.session.commit()
 
-    return jsonify({"dominant_emotion": dominant_emotion, "emotions": emotions}), 200
+        return jsonify({"dominant_emotion": dominant_emotion}), 200
 
+    except Exception as e:
+        print(f"DeepFace Analysis Error: {e}")
+        return jsonify({"error": f"Failed to analyze emotion: {str(e)}"}), 500
+
+    finally:
+        if os.path.exists(image_path):
+            os.remove(image_path)
+
+@app.route('/user/profile', methods=['GET'])
+@jwt_required()
+def get_profile():
+    user_id = get_jwt_identity()
+    user = User.query.filter_by(id=user_id).first()
+    if not user:
+        return jsonify({'error': 'User not found'}), 404
+
+    latest_emotion = Emotion.query.filter_by(user_id=user_id).order_by(Emotion.timestamp.desc()).first()
+    emotion_type = latest_emotion.emotion_type if latest_emotion else "Unknown"
+
+    user_info = {
+        'name': user.name,
+        'email': user.email,
+        'latest_emotion': emotion_type
+    }
+    return jsonify(user_info), 200
+
+# Run the Flask app
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=5001)
