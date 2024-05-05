@@ -9,6 +9,7 @@ const ProfilePage = () => {
         email: "",
     });
     const [emotion, setEmotion] = useState("");
+    const [loading, setLoading] = useState("");
 
     useEffect(() => {
         // Fetch user data from an API or perform any other side effect
@@ -53,24 +54,27 @@ const ProfilePage = () => {
     }, []);
 
     return (
-        <div>
-            <nav className="navbar navbar-expand-md navbar-light fixed-top">
+        <div className="profile-page" style={{ backgroundColor: "#fff", color: "#000", paddingTop: "80px" }}>
+            <nav className="navbar navbar-expand-md navbar-light fixed-top bg-danger">
                 <div className="container">
                     <Link className="navbar-brand" to="/">
-                        <span style={{ color: "rgb(207, 6, 6)" }}>Flannel</span>
+                        <span style={{ color: "#fff" }}>Flannel</span>
                     </Link>
                     <button
                         className="navbar-toggler"
                         type="button"
                         data-bs-toggle="collapse"
                         data-bs-target="#navbarNavAltMarkup"
+                        aria-controls="navbarNavAltMarkup"
+                        aria-expanded="false"
+                        aria-label="Toggle navigation"
                     >
                         <span className="navbar-toggler-icon"></span>
                     </button>
                     <div className="collapse navbar-collapse" id="navbarNavAltMarkup">
                         <ul className="navbar-nav ms-auto">
                             <li className="nav-item">
-                                <Link className="nav-link" to="/home">
+                                <Link className="nav-link" to="/home" style={{ color: "#fff" }}>
                                     Home
                                 </Link>
                             </li>
@@ -78,16 +82,33 @@ const ProfilePage = () => {
                     </div>
                 </div>
             </nav>
-            <h1>Welcome to Your Flannel Profile!</h1>
-            <div>
-                <h2>Personal Information</h2>
-                <p><strong>Name:</strong> {user.name}</p>
-                <p><strong>Email:</strong> {user.email}</p>
-                <h2>Emotion</h2>
-                <p><strong>Dominant Emotion:</strong>{emotion}</p>
+            <div className="container profile-content">
+                <h1 className="mt-5">Welcome to Your Flannel Profile!</h1>
+                {loading ? (
+                    <p>Loading...</p>
+                ) : (
+                    <div className="row mt-5">
+                        <div className="col-md-6">
+                            <div className="card mb-4" style={{ backgroundColor: "#000", color: "#fff" }}>
+                                <div className="card-body">
+                                    <h2 className="card-title">Personal Information</h2>
+                                    <p className="card-text"><strong>Name:</strong> {user.name}</p>
+                                    <p className="card-text"><strong>Email:</strong> {user.email}</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="col-md-6">
+                            <div className="card" style={{ backgroundColor: "#c00", color: "#fff" }}>
+                                <div className="card-body">
+                                    <h2 className="card-title">Emotion</h2>
+                                    <p className="card-text"><strong>Dominant Emotion:</strong> {emotion}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                )}
             </div>
         </div>
     );
 };
-
 export default ProfilePage;

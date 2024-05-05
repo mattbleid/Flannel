@@ -105,6 +105,7 @@ function Camera() {
         height="480"
       ></video>
       {error && <div>Error: {error}</div>}
+
     </div>
   );
 }
