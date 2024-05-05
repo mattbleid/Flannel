@@ -3,7 +3,7 @@ import React, { useRef, useEffect, useState } from "react";
 function Camera() {
   const videoRef = useRef(null);
   const [error, setError] = useState("");
-  const [emotion, setEmotion] = useState("");
+  //const [emotion, setEmotion] = useState("");
   //const [imageSrc, setImageSrc] = useState("");
 
   useEffect(() => {
@@ -49,8 +49,7 @@ function Camera() {
         if (data.dominant_emotion) {
           console.log("Dominant Emotion:", data.dominant_emotion);
           // Log only specified emotions
-          setEmotion(data.dominant_emotion);
-
+          //setEmotion(data.dominant_emotion);
           //send data to backend
           const postData = {
             emotion: data.dominant_emotion,
@@ -106,7 +105,6 @@ function Camera() {
         height="480"
       ></video>
       {error && <div>Error: {error}</div>}
-      {emotion && <div>Emotion: {emotion}</div>}
     </div>
   );
 }
