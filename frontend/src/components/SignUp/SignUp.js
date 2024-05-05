@@ -5,6 +5,8 @@ function SignUp() {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
   const [error, setError] = useState("");
 
   const handleRegister = async (event) => {
@@ -15,7 +17,7 @@ function SignUp() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({ email, firstName, lastName, password }),
       });
       const data = await response.json();
       if (response.ok) {
@@ -82,6 +84,28 @@ function SignUp() {
                     placeholder="Email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
+                    required
+                  />
+                </div>
+                <div className="mb-3">
+                  <input
+                    className="form-control"
+                    type="text"
+                    name="firstName"
+                    placeholder="First Name"
+                    value={firstName}
+                    onChange={(e) => setFirstName(e.target.value)}
+                    required
+                  />
+                </div>
+                <div className="mb-3">
+                  <input
+                    className="form-control"
+                    type="text"
+                    name="lastName"
+                    placeholder="Last Name"
+                    value={lastName}
+                    onChange={(e) => setLastName(e.target.value)}
                     required
                   />
                 </div>
