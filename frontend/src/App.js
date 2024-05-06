@@ -16,12 +16,14 @@ import Profile from "./components/ProfilePage/ProfilePage";
 
 function App() {
   const [authToken, setAuthToken] = useState(localStorage.getItem("authToken"));
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   // Save JWT token on successful login or registration
   const saveAuthToken = (token) => {
     console.log("Saving Auth Token:", token);
     setAuthToken(token);
     localStorage.setItem("authToken", token);
+    setIsLoggedIn(true);
   };
 
   // Fetch user profile on component mount
@@ -29,6 +31,7 @@ function App() {
     const fetchUserProfile = async () => {
       if (!authToken) {
         console.warn("No auth token found. Please log in.");
+        setIsLoggedIn(false);
         return;
       }
 
@@ -42,8 +45,10 @@ function App() {
         });
         const data = await response.json();
         console.log("User Profile:", data);
+        setIsLoggedIn(true);
       } catch (error) {
         console.error("Error fetching user profile:", error);
+        setIsLoggedIn(false);
       }
     };
 
@@ -55,18 +60,27 @@ function App() {
       <Routes>
         <Route path="/" element={<Navigate to="/home" />} />
         <Route path="/home" element={<Home />} />
-        <Route
-          path="/login"
-          element={<SignInSide saveAuthToken={saveAuthToken} />}
-        />
-        <Route
-          path="/signup"
-          element={<SignUp saveAuthToken={saveAuthToken} />}
-        />
+        {!isLoggedIn && (
+          <>
+            <Route
+              path="/login"
+              element={<SignInSide saveAuthToken={saveAuthToken} />}
+            />
+            <Route
+              path="/signup"
+              element={<SignUp saveAuthToken={saveAuthToken} />}
+            />
+          </>
+        )}
         <Route path="/resources" element={<Resources />} />
-        <Route path="/camera" element={<Camera authToken={authToken} />} />
-        <Route path="/moodtracker" element={<MoodTracker />} />
-        <Route path="/profile" element={<Profile />} />
+
+        {isLoggedIn && (
+          <>
+            <Route path="/camera" element={<Camera authToken={authToken} />} />
+            <Route path="/moodtracker" element={<MoodTracker />} />
+            <Route path="/profile" element={<Profile />} />
+          </>
+        )}
       </Routes>
     </Router>
   );
